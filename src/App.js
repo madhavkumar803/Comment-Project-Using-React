@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Route, Switch } from "react-router";
+import Post from "./component/Post";
+import PostGrid from "./component/PostGrid";
+import "./App.css";
+import { Link } from "react-router-dom";
 
-function App() {
+const App = () => {
+  const [postApiData, setPostApiData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      const postData = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+      setPostApiData(postData.data);
+    };
+    fetchPost();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch>
+        <Route exact path="/">
+          <PostGrid data={postApiData} />
+        </Route>
+        <Route exact path="/post/:id" component={Post} />
+      </Switch>
     </div>
   );
-}
+};
 
 export default App;
